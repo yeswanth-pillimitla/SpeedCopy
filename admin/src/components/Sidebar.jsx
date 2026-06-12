@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
   FiGrid,
   FiBox,
@@ -33,7 +33,9 @@ const menuItems = [
   { name: 'Settings', icon: FiSettings },
 ]
 
-function Sidebar({ activeMenu, setActiveMenu, sidebarOpen, setSidebarOpen, darkMode, setDarkMode }) {
+function Sidebar({ sidebarOpen, setSidebarOpen, darkMode, setDarkMode }) {
+  const location = useLocation()
+
   return (
     <>
       {/* Mobile Sidebar Overlay */}
@@ -50,9 +52,9 @@ function Sidebar({ activeMenu, setActiveMenu, sidebarOpen, setSidebarOpen, darkM
       </AnimatePresence>
 
       <div className={`
-        w-[256px] h-screen sticky top-0 bg-white border-r border-[#E2E8F0] flex flex-col justify-between z-50 overflow-hidden shrink-0
+        w-[256px] h-screen bg-white border-r border-[#E2E8F0] flex flex-col justify-between z-50 overflow-hidden shrink-0
         fixed md:relative inset-y-0 left-0 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
-        md:translate-x-0 transition-transform duration-300 ease-in-out h-screen
+        md:translate-x-0 transition-transform duration-300 ease-in-out
       `}>
 
         <div className="flex flex-col flex-1 min-h-0">
@@ -73,8 +75,8 @@ function Sidebar({ activeMenu, setActiveMenu, sidebarOpen, setSidebarOpen, darkM
           <nav className="w-full py-3 px-3 overflow-hidden flex-1 shrink-0 space-y-[2px]">
             {menuItems.map((item) => {
               const IconComponent = item.icon
-              const isActive = activeMenu === item.name
-              const isDashboard = item.name === 'Dashboard'
+              const isActive = (item.name === 'Dashboard' && location.pathname === '/dashboard') ||
+                               (item.name === 'Products' && ['/products', '/premium-business-card'].includes(location.pathname))
               const btnClass = `
                 w-full h-[36px] flex items-center px-3.5 rounded-[8px] text-[13px] font-medium transition-all duration-150 cursor-pointer
                 ${isActive
@@ -88,15 +90,13 @@ function Sidebar({ activeMenu, setActiveMenu, sidebarOpen, setSidebarOpen, darkM
                 </>
               )
 
-              if (isDashboard) {
+              if (item.name === 'Dashboard' || item.name === 'Products') {
+                const path = item.name === 'Dashboard' ? '/dashboard' : '/products'
                 return (
                   <Link
                     key={item.name}
-                    to="/dashboard"
-                    onClick={() => {
-                      setActiveMenu(item.name)
-                      setSidebarOpen(false)
-                    }}
+                    to={path}
+                    onClick={() => setSidebarOpen(false)}
                     className={btnClass}
                   >
                     {innerContent}
@@ -107,10 +107,7 @@ function Sidebar({ activeMenu, setActiveMenu, sidebarOpen, setSidebarOpen, darkM
               return (
                 <button
                   key={item.name}
-                  onClick={() => {
-                    setActiveMenu(item.name)
-                    setSidebarOpen(false)
-                  }}
+                  onClick={() => setSidebarOpen(false)}
                   className={btnClass}
                 >
                   {innerContent}
@@ -136,25 +133,27 @@ function Sidebar({ activeMenu, setActiveMenu, sidebarOpen, setSidebarOpen, darkM
         </div>
 
         {/* Dark Mode Card Section */}
-        <div className="p-4 pt-0 bg-white shrink-0 w-full">
-          <div className="flex items-center justify-between p-3.5 bg-white border border-slate-100 rounded-[12px] shadow-sm">
-            <span className="text-[13px] font-bold text-slate-800">Dark Mode</span>
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className={`
-                w-[40px] h-[22px] rounded-full p-[2px] transition-colors duration-300 focus:outline-none cursor-pointer relative flex items-center
-                ${darkMode ? 'bg-black' : 'bg-slate-200'}
-              `}
-            >
-              <div
+        {['/dashboard', '/notifications', '/profile'].includes(location.pathname) && (
+          <div className="p-4 pt-0 bg-white shrink-0 w-full">
+            <div className="flex items-center justify-between p-3.5 bg-white border border-slate-100 rounded-[12px] shadow-sm">
+              <span className="text-[13px] font-bold text-slate-800">Dark Mode</span>
+              <button
+                onClick={() => setDarkMode(!darkMode)}
                 className={`
-                  bg-white w-[18px] h-[18px] rounded-full shadow-sm transform transition-transform duration-300
-                  ${darkMode ? 'translate-x-[18px]' : 'translate-x-0'}
+                  w-[40px] h-[22px] rounded-full p-[2px] transition-colors duration-300 focus:outline-none cursor-pointer relative flex items-center
+                  ${darkMode ? 'bg-black' : 'bg-slate-200'}
                 `}
-              />
-            </button>
+              >
+                <div
+                  className={`
+                    bg-white w-[18px] h-[18px] rounded-full shadow-sm transform transition-transform duration-300
+                    ${darkMode ? 'translate-x-[18px]' : 'translate-x-0'}
+                  `}
+                />
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   )
