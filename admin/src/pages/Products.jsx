@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { 
@@ -114,6 +114,10 @@ const summaryCards = [
 ]
 
 function Products() {
+  useEffect(() => {
+    document.title = 'Products -SpeedCopy'
+  }, [])
+
   // Date Dropdown States
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [selectedRange, setSelectedRange] = useState('7days')
@@ -223,7 +227,7 @@ function Products() {
       className="w-full flex flex-col gap-6 pb-12 font-sans"
     >
       {/* DIV 1: PRODUCT HEADER */}
-      <div className="w-full flex items-center justify-between min-h-[56px] py-1 gap-6">
+      <div className="w-full flex flex-col md:flex-row md:items-center justify-between gap-4 py-1">
         {/* Title and Date Selector */}
         <div className="flex flex-col">
           <Link
@@ -341,13 +345,15 @@ function Products() {
             <FiUpload className="w-4 h-4 text-gray-500" /> Import
           </motion.button>
 
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="h-9 px-4 rounded-lg bg-black text-white text-[13px] font-bold hover:bg-zinc-900 flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
-          >
-            <FiPlus className="w-4 h-4 text-white stroke-[2.5]" /> Add Product
-          </motion.button>
+          <Link to="/add-product">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="h-9 px-4 rounded-lg bg-black text-white text-[13px] font-bold hover:bg-zinc-900 flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+            >
+              <FiPlus className="w-4 h-4 text-white stroke-[2.5]" /> Add Product
+            </motion.button>
+          </Link>
         </div>
       </div>
 

@@ -1,9 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { FiArrowRight, FiArrowLeft } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 
 function Forgot() {
+  useEffect(() => {
+    document.title = 'Forgot Password -SpeedCopy'
+  }, [])
+
   const [forgotIdentifier, setForgotIdentifier] = useState('')
   const navigate = useNavigate()
 

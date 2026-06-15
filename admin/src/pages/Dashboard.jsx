@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import QuickActions from '../components/QuickActions.jsx'
 import {
@@ -29,6 +29,10 @@ import {
 } from 'recharts'
 
 function Dashboard() {
+  useEffect(() => {
+    document.title = 'Dashboard -SpeedCopy'
+  }, [])
+
   // State for date range filtering
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [selectedRange, setSelectedRange] = useState('7days') // '7days', '30days', 'year', 'custom'
@@ -294,7 +298,7 @@ function Dashboard() {
                   initial={{ opacity: 0, y: -8, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ duration: 0.15, ease: 'easeOut' }}
-                  className="absolute left-0 mt-1.5 w-72 bg-white border border-[#E2E8F0] rounded-xl shadow-xl z-50 p-3.5 origin-top-left flex flex-col gap-1"
+                  className="absolute right-0 md:right-auto md:left-0 mt-1.5 w-72 bg-white border border-[#E2E8F0] rounded-xl shadow-xl z-50 p-3.5 origin-top-right md:origin-top-left flex flex-col gap-1"
                 >
                   <button
                     type="button"

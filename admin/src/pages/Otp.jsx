@@ -20,6 +20,7 @@ function Otp() {
   }, [timer])
 
   useEffect(() => {
+    document.title = 'OTP Verification -SpeedCopy'
     // Focus the first input field on mount
     setTimeout(() => {
       if (inputRefs.current[0]) {

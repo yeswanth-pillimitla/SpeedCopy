@@ -76,7 +76,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen, darkMode, setDarkMode }) {
             {menuItems.map((item) => {
               const IconComponent = item.icon
               const isActive = (item.name === 'Dashboard' && location.pathname === '/dashboard') ||
-                               (item.name === 'Products' && ['/products', '/premium-business-card'].includes(location.pathname))
+                               (item.name === 'Products' && ['/products', '/premium-business-card'].includes(location.pathname)) ||
+                               (item.name === 'Customers' && location.pathname === '/customers')
               const btnClass = `
                 w-full h-[36px] flex items-center px-3.5 rounded-[8px] text-[13px] font-medium transition-all duration-150 cursor-pointer
                 ${isActive
@@ -90,8 +91,12 @@ function Sidebar({ sidebarOpen, setSidebarOpen, darkMode, setDarkMode }) {
                 </>
               )
 
-              if (item.name === 'Dashboard' || item.name === 'Products') {
-                const path = item.name === 'Dashboard' ? '/dashboard' : '/products'
+              if (item.name === 'Dashboard' || item.name === 'Products' || item.name === 'Customers') {
+                const path = item.name === 'Dashboard' 
+                  ? '/dashboard' 
+                  : item.name === 'Products' 
+                    ? '/products' 
+                    : '/customers'
                 return (
                   <Link
                     key={item.name}

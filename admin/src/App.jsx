@@ -8,6 +8,8 @@ import Products from './pages/Products.jsx'
 import Notifications from './pages/Notifications.jsx'
 import Profile from './pages/Profile.jsx'
 import PremiumBusinessCard from './pages/PremiumBusinessCard.jsx' 
+import AddProduct from './pages/AddProduct.jsx'
+import Customers from './pages/Customers.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import Topbar from './components/Topbar.jsx'
 import "./index.css"
@@ -17,7 +19,7 @@ function AppContent() {
   const [darkMode, setDarkMode] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  const showAdminLayout = !['/login', '/forgot', '/otp'].includes(location.pathname)
+  const showAdminLayout = !['/login', '/forgot', '/otp', '/add-product'].includes(location.pathname)
 
   return (
     <div className={`min-h-screen w-full flex bg-[#F8FAFC] ${darkMode ? 'dark' : ''} transition-colors duration-300 font-sans`}>
@@ -44,6 +46,8 @@ function AppContent() {
               <Route path="/otp" element={<Otp />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/products" element={<Products />} />
+              <Route path="/customers" element={<Customers />} />
+              <Route path="/add-product" element={<AddProduct />} />
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/premium-business-card" element={<PremiumBusinessCard />} />

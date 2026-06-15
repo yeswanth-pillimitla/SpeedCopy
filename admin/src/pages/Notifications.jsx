@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
@@ -81,6 +81,10 @@ const initialNotifications = [
 ]
 
 function Notifications() {
+  useEffect(() => {
+    document.title = 'Notification Center -SpeedCopy'
+  }, [])
+
   const [notifications, setNotifications] = useState(initialNotifications)
   const [activeTab, setActiveTab] = useState('All')
 

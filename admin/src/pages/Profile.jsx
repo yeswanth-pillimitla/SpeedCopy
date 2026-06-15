@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
@@ -40,6 +40,10 @@ function Toggle({ active, onChange }) {
 }
 
 function Profile() {
+  useEffect(() => {
+    document.title = 'Administrator Profile -SpeedCopy'
+  }, [])
+
   // Personal Info States
   const [isEditing, setIsEditing] = useState(false)
   const [personalInfo, setPersonalInfo] = useState({
