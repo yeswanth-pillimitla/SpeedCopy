@@ -289,31 +289,31 @@ function Customers() {
           variants={cardsContainer}
           initial="hidden"
           animate="show"
-          className="grid grid-cols-2 md:grid-cols-5 gap-3 w-full pt-2"
+          className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-2 w-full"
         >
           {statsCards.map((card, idx) => (
             <motion.div
               key={idx}
               variants={cardItem}
-              whileHover={{ y: -2, transition: { duration: 0.2 } }}
-              className="bg-white border border-[#E2E8F0] rounded-[14px] p-4 flex flex-col justify-between shadow-[0px_1px_2px_-1px_#0000001A,0px_1px_3px_0px_#0000001A] h-[125px] sm:h-[135px] md:h-[149.6px]"
+              whileHover={{ y: -3, transition: { duration: 0.2 } }}
+              className="w-full h-[133.6px] bg-white border border-[#E2E8F0] rounded-[14px] p-5 flex flex-col justify-between shadow-[0px_1px_2px_-1px_#0000001A,0px_1px_3px_0px_#0000001A]"
             >
-              <span className="text-[11px] font-bold text-gray-400 tracking-tight leading-none">
+              <span className="text-[12px] font-semibold text-gray-400 tracking-tight leading-none font-sans">
                 {card.title}
               </span>
-              <div className="text-[20px] font-black text-gray-900 tracking-tight mt-1 leading-none">
+              <div className="text-[20px] font-black text-gray-900 tracking-tight mt-1 leading-none font-sans">
                 {card.value}
               </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-1 mt-1">
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 leading-none w-fit shrink-0 ${
+              <div className="flex items-center gap-1.5 mt-1">
+                <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 leading-none w-fit shrink-0 ${
                   card.isPositive 
                     ? 'bg-[#DEF7EC] text-[#03543F]' 
                     : 'bg-[#FDE8E8] text-[#9B1C1C]'
                 }`}>
-                  {card.isPositive ? <FiArrowUpRight className="w-2.5 h-2.5 stroke-[2.5]" /> : <FiArrowDownRight className="w-2.5 h-2.5 stroke-[2.5]" />}
+                  {card.isPositive ? <FiArrowUpRight className="w-3 h-3 stroke-[2.5]" /> : <FiArrowDownRight className="w-3 h-3 stroke-[2.5]" />}
                   {card.change}
                 </span>
-                <span className="text-[9.5px] text-gray-400 font-semibold truncate leading-none">
+                <span className="text-[10px] text-gray-400 font-medium">
                   vs last month
                 </span>
               </div>
@@ -326,7 +326,7 @@ function Customers() {
           variants={tableContainer}
           initial="hidden"
           animate="show"
-          className="bg-white border border-[#E2E8F0] rounded-[14px] flex flex-col shadow-xs overflow-hidden w-full min-h-[450px] md:min-h-[520px]"
+          className="bg-white border border-[#E2E8F0] rounded-[14px] flex flex-col shadow-xs overflow-hidden w-full min-h-[450px] md:min-h-[520px] mt-2"
         >
           {/* TABLE TOP FILTER SECTION */}
           <div className="p-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-b border-[#E2E8F0]">

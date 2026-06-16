@@ -222,7 +222,7 @@ export default function AddProduct() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -15 }}
       transition={{ duration: 0.3 }}
-      className="w-full min-h-screen py-6 px-4 md:px-8 lg:px-10 bg-[#F8FAFC] flex flex-col justify-start items-center font-sans"
+      className="w-full min-h-screen py-6 px-4 md:px-8 lg:px-10 bg-[#1E293B] flex flex-col justify-start items-center font-sans"
     >
       <div className="w-full max-w-[1000px] bg-white border border-[#E2E8F0] rounded-[16px] shadow-[0px_10px_25px_-5px_rgba(0,0,0,0.05),0px_8px_16px_-6px_rgba(0,0,0,0.05)] flex flex-col overflow-hidden">
         {/* TOPBAR */}
@@ -1250,6 +1250,10 @@ export default function AddProduct() {
 
         {/* FOOTERBAR */}
         <ProductFooterbar
+          activeStep={activeStep}
+          onBack={() => {
+            if (activeStep > 1) setActiveStep(activeStep - 1)
+          }}
           onSaveDraft={handleSaveDraft}
           onPreview={handlePreview}
           onPublish={handlePublish}

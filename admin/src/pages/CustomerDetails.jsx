@@ -14,7 +14,8 @@ import {
   FiLifeBuoy,
   FiFileText,
   FiPlus,
-  FiTrash2
+  FiTrash2,
+  FiClock
 } from 'react-icons/fi'
 
 const customerProfiles = {
@@ -426,11 +427,10 @@ export default function CustomerDetails({ customerId, onBack }) {
               </div>
               <div className="flex justify-between items-center text-[12.5px]">
                 <span className="text-[#64748B] font-medium">2FA Status</span>
-                <span className={`inline-flex items-center gap-1 font-bold px-2 py-0.5 rounded-full text-[11px] leading-none ${
-                  customer.twoFA === 'Enabled'
+                <span className={`inline-flex items-center gap-1 font-bold px-2 py-0.5 rounded-full text-[11px] leading-none ${customer.twoFA === 'Enabled'
                     ? 'text-[#107C41] bg-[#DEF7EC] border border-[#BCF0DA]'
                     : 'text-[#64748B] bg-[#F8FAFC] border border-[#E2E8F0]'
-                }`}>
+                  }`}>
                   {customer.twoFA === 'Enabled' && <FiCheckCircle className="w-3 h-3 text-[#107C41]" />}
                   {customer.twoFA}
                 </span>
@@ -455,11 +455,10 @@ export default function CustomerDetails({ customerId, onBack }) {
                 <button
                   key={tab.name}
                   onClick={() => setActiveTab(tab.name)}
-                  className={`h-full pb-0 px-0.5 text-[12.5px] font-medium cursor-pointer transition-all flex items-center gap-1.5 relative ${
-                    isActive
+                  className={`h-full pb-0 px-0.5 text-[12.5px] font-medium cursor-pointer transition-all flex items-center gap-1.5 relative ${isActive
                       ? 'text-[#0F172A] font-bold'
                       : 'text-[#64748B] hover:text-[#0F172A]'
-                  }`}
+                    }`}
                 >
                   <TabIcon className="w-4 h-4 shrink-0" />
                   <span className="whitespace-nowrap">{tab.name}</span>
@@ -533,45 +532,91 @@ export default function CustomerDetails({ customerId, onBack }) {
               {activeTab === 'Orders History' && (
                 <motion.div
                   key="orders"
-                  initial={{ opacity: 0, x: 8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -8 }}
-                  transition={{ duration: 0.18 }}
-                  className="flex flex-col h-full"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={{
+                    hidden: { opacity: 0, y: 10 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: {
+                        duration: 0.22,
+                        ease: 'easeOut',
+                        staggerChildren: 0.08,
+                        delayChildren: 0.05
+                      }
+                    },
+                    exit: {
+                      opacity: 0,
+                      y: -10,
+                      transition: { duration: 0.15, ease: 'easeIn' }
+                    }
+                  }}
+                  className="flex flex-col w-full"
                 >
-                  <h4 className="text-[15px] font-bold text-[#0F172A] font-sans tracking-tight mb-3 shrink-0">Orders History</h4>
-                  <div className="flex-1 overflow-y-auto">
-                    {customer.orders && customer.orders.length > 0 ? (
-                      <table className="w-full text-left text-[12px] border-collapse font-sans">
-                        <thead>
-                          <tr className="border-b border-[#F1F5F9] text-slate-400 font-bold uppercase text-[10px]">
-                            <th className="py-2">Order ID</th>
-                            <th className="py-2">Date</th>
-                            <th className="py-2 text-right">Amount</th>
-                            <th className="py-2 text-right">Status</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[#F8FAFC]">
-                          {customer.orders.map((ord) => (
-                            <tr key={ord.id} className="text-[#0F172A] hover:bg-slate-50/50">
-                              <td className="py-2.5 font-bold">{ord.id}</td>
-                              <td className="py-2.5 text-[#64748B] font-semibold">{ord.date}</td>
-                              <td className="py-2.5 text-right font-bold text-[#0F172A]">{ord.amount}</td>
-                              <td className="py-2.5 text-right">
-                                <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${ord.status === 'Delivered'
-                                    ? 'bg-[#DEF7EC] text-[#03543F]'
-                                    : 'bg-[#FEF3C7] text-[#92400E]'
-                                  }`}>
-                                  {ord.status}
-                                </span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    ) : (
-                      <p className="text-[13px] text-[#64748B] py-6 text-center">No order history available.</p>
-                    )}
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-[16px] font-bold text-[#0F172A]">Recent Orders</h3>
+                    <button className="text-[13px] font-medium text-[#0F172A] hover:underline cursor-pointer transition-all">
+                      View All Orders
+                    </button>
+                  </div>
+
+                  <div className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden shadow-sm">
+                    <table className="w-full border-collapse text-left">
+                      <thead>
+                        <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0]">
+                          <th className="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
+                            ORDER ID
+                          </th>
+                          <th className="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
+                            DATE
+                          </th>
+                          <th className="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
+                            AMOUNT
+                          </th>
+                          <th className="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
+                            STATUS
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[
+                          { id: '#ORD-7352', date: 'Oct 24, 2023', amount: '$45.00', status: 'Processing' },
+                          { id: '#ORD-7104', date: 'Sep 12, 2023', amount: '$120.50', status: 'Delivered' },
+                          { id: '#ORD-6899', date: 'Aug 05, 2023', amount: '$845.00', status: 'Delivered' }
+                        ].map((ord) => (
+                          <motion.tr
+                            key={ord.id}
+                            variants={{
+                              hidden: { opacity: 0, y: 8 },
+                              visible: { opacity: 1, y: 0, transition: { duration: 0.2, ease: 'easeOut' } }
+                            }}
+                            className="border-b border-[#E2E8F0] last:border-b-0 text-[#0F172A] hover:bg-slate-50/50 transition-colors"
+                          >
+                            <td className="px-6 py-[14px] text-[13px] font-bold">
+                              {ord.id}
+                            </td>
+                            <td className="px-6 py-[14px] text-[13px] font-medium text-[#64748B]">
+                              {ord.date}
+                            </td>
+                            <td className="px-6 py-[14px] text-[13px] font-bold">
+                              {ord.amount}
+                            </td>
+                            <td className="px-6 py-[14px]">
+                              <span
+                                className={`inline-flex items-center px-2.5 py-0.5 rounded-[6px] text-[11px] font-semibold leading-tight ${ord.status === 'Processing'
+                                    ? 'bg-[#E0EBFF] text-[#2563EB]'
+                                    : 'bg-[#DEF7EC] text-[#03543F]'
+                                  }`}
+                              >
+                                {ord.status}
+                              </span>
+                            </td>
+                          </motion.tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </motion.div>
               )}
@@ -580,73 +625,216 @@ export default function CustomerDetails({ customerId, onBack }) {
               {activeTab === 'Support History' && (
                 <motion.div
                   key="support"
-                  initial={{ opacity: 0, x: 8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -8 }}
-                  transition={{ duration: 0.18 }}
-                  className="flex flex-col h-full"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={{
+                    hidden: { opacity: 0, y: 10 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: {
+                        duration: 0.22,
+                        ease: 'easeOut',
+                        staggerChildren: 0.08,
+                        delayChildren: 0.05
+                      }
+                    },
+                    exit: {
+                      opacity: 0,
+                      y: -10,
+                      transition: { duration: 0.15, ease: 'easeIn' }
+                    }
+                  }}
+                  className="flex flex-col w-full"
                 >
-                  <h4 className="text-[15px] font-bold text-[#0F172A] font-sans tracking-tight mb-3 shrink-0">Support History</h4>
-                  <div className="flex-1 overflow-y-auto">
-                    {customer.tickets && customer.tickets.length > 0 ? (
-                      <div className="flex flex-col gap-3">
-                        {customer.tickets.map((tkt) => (
-                          <div key={tkt.id} className="p-3 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-between gap-3 hover:bg-slate-50/80 transition-colors">
-                            <div className="flex flex-col gap-0.5 min-w-0">
-                              <span className="text-[12.5px] font-bold text-gray-900 truncate">{tkt.subject}</span>
-                              <span className="text-[11px] text-slate-400 font-semibold">{tkt.id} • {tkt.date}</span>
-                            </div>
-                            <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border shrink-0 ${tkt.status === 'Open'
-                                ? 'bg-amber-50 text-amber-700 border-amber-200'
-                                : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                              }`}>
-                              {tkt.status}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-[13px] text-[#64748B] py-6 text-center">No support tickets found.</p>
-                    )}
+                  <div className="w-full bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl overflow-hidden shadow-sm">
+                    <table className="w-full border-collapse text-left">
+                      <thead>
+                        <tr className="bg-[#F8FAFC] border-b border-[#E2E8F0]">
+                          <th className="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-[#64748B] w-[95px]">
+                            TICKET ID
+                          </th>
+                          <th className="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
+                            SUBJECT
+                          </th>
+                          <th className="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-[#64748B] w-[130px]">
+                            STATUS
+                          </th>
+                          <th className="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-[#64748B] w-[120px]">
+                            PRIORITY
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[
+                          { id: '#TK-1024', subject: 'API Rate Limit Exceeded on', status: 'OPEN', priority: 'High' },
+                          { id: '#TK-0988', subject: 'Billing Invoice Missing for Q', status: 'IN PROGRESS', priority: 'Medium' },
+                          { id: '#TK-0842', subject: 'How to add new admin user', status: 'RESOLVED', priority: 'Low' },
+                          { id: '#TK-0711', subject: 'Password Reset Request', status: 'CLOSED', priority: 'High' }
+                        ].map((ord) => {
+                          const isMuted = ord.status === 'RESOLVED' || ord.status === 'CLOSED'
+                          const idParts = ord.id.split('-')
+                          
+                          // Priority dot color logic matching screenshot
+                          let dotBg = 'bg-[#94A3B8]'
+                          if (ord.status === 'CLOSED') {
+                            dotBg = 'bg-[#10B981]' // Green dot for row 4 closed high priority
+                          } else if (ord.priority === 'High') {
+                            dotBg = 'bg-[#DC2626]' // Red dot
+                          } else if (ord.priority === 'Medium') {
+                            dotBg = 'bg-[#F59E0B]' // Yellow dot
+                          }
+
+                          // Status badge style logic
+                          let badgeStyle = 'bg-[#E2E8F0] text-[#334155]'
+                          if (ord.status === 'OPEN') {
+                            badgeStyle = 'bg-[#FDE8E8] text-[#9B1C1C]'
+                          } else if (ord.status === 'IN PROGRESS') {
+                            badgeStyle = 'bg-[#E0E7FF] text-[#4F46E5]'
+                          } else if (ord.status === 'RESOLVED') {
+                            badgeStyle = 'bg-[#F1F5F9] text-[#475569]'
+                          }
+
+                          return (
+                            <motion.tr
+                              key={ord.id}
+                              variants={{
+                                hidden: { opacity: 0, y: 8 },
+                                visible: { opacity: 1, y: 0, transition: { duration: 0.2, ease: 'easeOut' } }
+                              }}
+                              className="border-b border-[#E2E8F0] last:border-b-0 hover:bg-slate-50/50 transition-colors"
+                            >
+                              <td className={`px-6 py-[14px] text-[13px] font-bold leading-tight ${isMuted ? 'text-slate-400' : 'text-[#0F172A]'}`}>
+                                {ord.id === '#TK-0711' ? (
+                                  <span>#TK-0711</span>
+                                ) : (
+                                  <div className="flex flex-col">
+                                    <span>{idParts[0]}-</span>
+                                    <span>{idParts[1]}</span>
+                                  </div>
+                                )}
+                              </td>
+                              <td className={`px-6 py-[14px] text-[13px] font-medium ${isMuted ? 'text-slate-400' : 'text-[#0F172A]'}`}>
+                                {ord.subject}
+                              </td>
+                              <td className="px-6 py-[14px]">
+                                <span className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider leading-none ${badgeStyle}`}>
+                                  {ord.status}
+                                </span>
+                              </td>
+                              <td className={`px-6 py-[14px] text-[13px] font-medium ${isMuted ? 'text-slate-400' : 'text-[#0F172A]'}`}>
+                                <div className="flex items-center gap-2">
+                                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotBg}`} />
+                                  <span>{ord.priority}</span>
+                                </div>
+                              </td>
+                            </motion.tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 </motion.div>
               )}
 
               {/* Notes Tab content */}
-              {activeTab === 'Notes' && (
-                <motion.div
-                  key="notes"
-                  initial={{ opacity: 0, x: 8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -8 }}
-                  transition={{ duration: 0.18 }}
-                  className="flex flex-col h-full gap-3"
-                >
-                  <h4 className="text-[15px] font-bold text-[#0F172A] font-sans tracking-tight shrink-0">Customer Notes</h4>
+              {activeTab === 'Notes' && (() => {
+                const defaultNotes = customer.id === 1 || customer.id === 'CUS-921' ? [
+                  { author: 'Sarah J. (Admin)', date: '2 days ago', text: 'Customer called to ask about bulk pricing for holiday season. Quoted them our standard tier 2 discount rate. Follow up next week.', isAdmin: true },
+                  { author: 'System Auto-Note', date: 'Oct 12, 2023', text: 'Account upgraded to VIP status automatically based on lifetime spend threshold.', isAdmin: false }
+                ] : []
+                const displayNotes = [...notesList, ...defaultNotes]
 
-                  {/* Notes List */}
-                  <div className="flex-1 overflow-y-auto space-y-2.5 pr-1">
-                    {notesList.length > 0 ? (
-                      notesList.map((note, idx) => (
-                        <div key={idx} className="p-3 bg-slate-50 border border-slate-100 rounded-lg flex justify-between items-start gap-4 hover:bg-slate-50/80 transition-colors">
-                          <div className="flex flex-col gap-0.5 text-left">
-                            <p className="text-[12.5px] text-gray-700 font-semibold leading-relaxed">{note.text}</p>
-                            <span className="text-[10px] text-slate-400 font-bold mt-1">{note.date}</span>
-                          </div>
-                          <button
-                            onClick={() => handleRemoveNote(idx)}
-                            className="text-slate-400 hover:text-rose-600 transition-colors p-1 cursor-pointer shrink-0"
-                          >
-                            <FiTrash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-[13px] text-[#64748B] py-6 text-center">No notes written yet.</p>
-                    )}
-                  </div>
-                </motion.div>
-              )}
+                return (
+                  <motion.div
+                    key="notes"
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    variants={{
+                      hidden: { opacity: 0, y: 10 },
+                      visible: {
+                        opacity: 1,
+                        y: 0,
+                        transition: {
+                          duration: 0.22,
+                          ease: 'easeOut',
+                          staggerChildren: 0.06,
+                          delayChildren: 0.05
+                        }
+                      },
+                      exit: {
+                        opacity: 0,
+                        y: -10,
+                        transition: { duration: 0.15, ease: 'easeIn' }
+                      }
+                    }}
+                    className="flex flex-col w-full h-full gap-4"
+                  >
+                    {/* Header */}
+                    <div className="flex flex-col text-left shrink-0">
+                      <h3 className="text-[16px] font-bold text-[#0F172A]">Internal Notes</h3>
+                      <p className="text-[12px] text-slate-400 font-medium mt-0.5">Only visible to staff members.</p>
+                    </div>
+
+                    {/* Notes List */}
+                    <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+                      {displayNotes.length > 0 ? (
+                        displayNotes.map((note, idx) => {
+                          const isAdmin = note.isAdmin !== false
+                          return (
+                            <motion.div
+                              key={note.text + idx}
+                              variants={{
+                                hidden: { opacity: 0, y: 8 },
+                                visible: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' } }
+                              }}
+                              layout
+                              className={`p-4 rounded-xl border flex flex-col gap-2 text-left ${
+                                isAdmin
+                                  ? 'bg-[#FFFDF5] border-[#FEF08A]'
+                                  : 'bg-[#F8FAFC] border-[#E2E8F0]'
+                              }`}
+                            >
+                              <div className="flex justify-between items-center text-[13px]">
+                                <span className="font-bold text-[#0F172A]">{note.author || 'Sarah J. (Admin)'}</span>
+                                <span className="text-[#94A3B8] font-medium text-[12px] flex items-center gap-1">
+                                  <FiClock className="w-3.5 h-3.5" />
+                                  {note.date}
+                                </span>
+                              </div>
+                              <p className="text-[13px] text-[#334155] font-medium leading-relaxed mt-1">
+                                {note.text}
+                              </p>
+                            </motion.div>
+                          )
+                        })
+                      ) : (
+                        <p className="text-[13px] text-[#64748B] py-6 text-center">No notes written yet.</p>
+                      )}
+                    </div>
+
+                    {/* Add Note Form */}
+                    <form onSubmit={handleAddNote} className="flex flex-col gap-3 mt-2 shrink-0">
+                      <textarea
+                        value={newNote}
+                        onChange={(e) => setNewNote(e.target.value)}
+                        placeholder="Add a new note about this customer..."
+                        className="w-full min-h-[88px] p-3.5 bg-white border border-[#E2E8F0] rounded-xl text-[13px] font-medium text-slate-700 placeholder-slate-400 focus:outline-none focus:border-[#0F172A] focus:ring-1 focus:ring-[#0F172A]/10 transition-all resize-none"
+                      />
+                      <motion.button
+                        type="submit"
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        className="w-full h-10 bg-black text-white text-[13px] font-bold rounded-xl hover:bg-zinc-900 transition-all cursor-pointer flex items-center justify-center"
+                      >
+                        Add Note
+                      </motion.button>
+                    </form>
+                  </motion.div>
+                )
+              })()}
             </AnimatePresence>
           </div>
         </motion.div>
