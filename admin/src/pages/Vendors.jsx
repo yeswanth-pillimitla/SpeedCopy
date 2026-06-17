@@ -390,8 +390,8 @@ export default function Vendors() {
                   type="button"
                   onClick={() => setActiveTab(tab)}
                   className={`px-3 py-1.5 rounded-lg text-[12.5px] font-bold transition-all cursor-pointer ${activeTab === tab
-                      ? 'bg-slate-100 text-black font-extrabold shadow-2xs'
-                      : 'text-slate-400 hover:text-slate-650'
+                    ? 'bg-slate-100 text-black font-extrabold shadow-2xs'
+                    : 'text-slate-400 hover:text-slate-650'
                     }`}
                 >
                   {tab}
@@ -479,7 +479,7 @@ export default function Vendors() {
                             checked={isChecked}
                             onChange={() => handleToggleRow(vendor.id)}
                             className="w-3.5 h-3.5 rounded border-[#CBD5E1] text-black focus:ring-black cursor-pointer"
-                          />  
+                          />
                         </td>
 
                         {/* Vendor Name + Location */}

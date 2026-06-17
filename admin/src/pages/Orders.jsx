@@ -97,7 +97,7 @@ export default function Orders() {
   const [statusFilter, setStatusFilter] = useState('All')
 
   if (orderId) {
-    return <OrderDetails orderId={orderId} onBack={() => setSearchParams({ })} />
+    return <OrderDetails orderId={orderId} onBack={() => setSearchParams({})} />
   }
 
   // CSV Export functionality
@@ -642,7 +642,7 @@ export default function Orders() {
                         </td>
                         <td className="px-6 py-3.5 text-right">
                           <div className="flex items-center justify-end gap-2 text-slate-400">
-                            <button 
+                            <button
                               onClick={() => setSearchParams({ id: ord.id })}
                               className="p-1 hover:text-black hover:bg-slate-100 rounded transition-colors cursor-pointer flex items-center justify-center"
                             >
