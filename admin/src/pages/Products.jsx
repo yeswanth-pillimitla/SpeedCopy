@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { 
-  FiDownload, 
-  FiUpload, 
-  FiPlus, 
-  FiSearch, 
-  FiFilter, 
-  FiEye, 
-  FiMoreHorizontal, 
+import {
+  FiDownload,
+  FiUpload,
+  FiPlus,
+  FiSearch,
+  FiFilter,
+  FiEye,
+  FiMoreHorizontal,
   FiChevronDown,
   FiChevronLeft,
   FiChevronRight,
@@ -219,7 +219,7 @@ function Products() {
   }
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -246,10 +246,10 @@ function Products() {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="text-[11px] font-semibold text-gray-500 border border-gray-200 rounded-full px-2.5 py-1 bg-white shadow-sm flex items-center gap-1 cursor-pointer hover:bg-gray-50 transition-all focus:outline-none"
               >
-                {rangeLabels[selectedRange]} 
+                {rangeLabels[selectedRange]}
                 <FiChevronDown className={`w-3 h-3 text-gray-400 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
-              
+
               <AnimatePresence>
                 {isDropdownOpen && (
                   <>
@@ -336,7 +336,7 @@ function Products() {
           >
             <FiDownload className="w-4 h-4 text-gray-500" /> Export
           </motion.button>
-          
+
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -386,7 +386,7 @@ function Products() {
 
       {/* DIV 4: PRODUCTS TABLE SECTION */}
       <div className="w-full bg-white border border-[#E2E8F0] rounded-[14px] shadow-[0px_1px_2px_-1px_#0000001A,0px_1px_3px_0px_#0000001A] overflow-hidden flex flex-col">
-        
+
         {/* TABLE TOP FILTER DIV */}
         <div className="w-full h-[70.4px] px-4 py-3 flex items-center justify-between border-b border-[#E2E8F0] bg-white gap-4">
           {/* Filters tabs */}
@@ -400,11 +400,10 @@ function Products() {
                     setActiveTab(tab)
                     setCurrentPage(1)
                   }}
-                  className={`px-3 py-1.5 rounded-lg text-[13px] font-semibold transition-all cursor-pointer ${
-                    isActive 
-                      ? 'bg-[#F1F5F9] text-black font-bold shadow-sm' 
+                  className={`px-3 py-1.5 rounded-lg text-[13px] font-semibold transition-all cursor-pointer ${isActive
+                      ? 'bg-[#F1F5F9] text-black font-bold shadow-sm'
                       : 'text-gray-500 hover:text-black hover:bg-slate-50'
-                  }`}
+                    }`}
                 >
                   {tab}
                 </button>
@@ -429,7 +428,7 @@ function Products() {
                 className="w-[200px] h-9 pl-9 pr-3 text-[13px] bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-black focus:ring-1 focus:ring-black/10 transition-all font-sans"
               />
             </div>
-            
+
             <button className="w-9 h-9 border border-gray-200 rounded-lg flex items-center justify-center text-gray-500 hover:text-black hover:bg-slate-50 transition-all cursor-pointer shadow-sm">
               <FiFilter className="w-4 h-4" />
             </button>
@@ -458,8 +457,8 @@ function Products() {
                 <th className="py-3 px-4 text-[10px] font-bold text-gray-400 uppercase tracking-wider font-sans text-right">ACTIONS</th>
               </tr>
             </thead>
-            
-            <motion.tbody 
+
+            <motion.tbody
               variants={containerVariants}
               initial="hidden"
               animate="show"
@@ -474,7 +473,7 @@ function Products() {
               ) : (
                 filteredProducts.map((product) => {
                   const isChecked = selectedRows.includes(product.id)
-                  
+
                   // Status styles
                   let statusClass = ''
                   if (product.status === 'Active') {
@@ -614,53 +613,50 @@ function Products() {
           <div>
             Showing <span className="font-bold text-gray-750">1</span> to <span className="font-bold text-gray-750">{filteredProducts.length}</span> of <span className="font-bold text-gray-750">45,294</span> results
           </div>
-          
+
           {/* Pagination */}
           <div className="flex items-center gap-1">
-            <button 
+            <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:bg-slate-50 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <FiChevronLeft className="w-4 h-4" />
             </button>
-            
-            <button 
+
+            <button
               onClick={() => setCurrentPage(1)}
-              className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-[12px] transition-all cursor-pointer ${
-                currentPage === 1 
-                  ? 'bg-black text-white shadow-sm' 
+              className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-[12px] transition-all cursor-pointer ${currentPage === 1
+                  ? 'bg-black text-white shadow-sm'
                   : 'text-gray-500 hover:text-black hover:bg-slate-50'
-              }`}
+                }`}
             >
               1
             </button>
 
-            <button 
+            <button
               onClick={() => setCurrentPage(2)}
-              className={`w-8 h-8 rounded-lg flex items-center justify-center font-semibold text-[12px] transition-all cursor-pointer ${
-                currentPage === 2 
-                  ? 'bg-black text-white shadow-sm' 
+              className={`w-8 h-8 rounded-lg flex items-center justify-center font-semibold text-[12px] transition-all cursor-pointer ${currentPage === 2
+                  ? 'bg-black text-white shadow-sm'
                   : 'text-gray-500 hover:text-black hover:bg-slate-50'
-              }`}
+                }`}
             >
               2
             </button>
 
-            <button 
+            <button
               onClick={() => setCurrentPage(3)}
-              className={`w-8 h-8 rounded-lg flex items-center justify-center font-semibold text-[12px] transition-all cursor-pointer ${
-                currentPage === 3 
-                  ? 'bg-black text-white shadow-sm' 
+              className={`w-8 h-8 rounded-lg flex items-center justify-center font-semibold text-[12px] transition-all cursor-pointer ${currentPage === 3
+                  ? 'bg-black text-white shadow-sm'
                   : 'text-gray-500 hover:text-black hover:bg-slate-50'
-              }`}
+                }`}
             >
               3
             </button>
 
             <span className="text-gray-300 px-1 select-none">...</span>
 
-            <button 
+            <button
               disabled={currentPage === 3}
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, 3))}
               className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:bg-slate-50 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"

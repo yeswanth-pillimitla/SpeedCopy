@@ -80,7 +80,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen, darkMode, setDarkMode }) {
                 (item.name === 'Customers' && location.pathname === '/customers') ||
                 (item.name === 'Orders' && location.pathname === '/orders') ||
                 (item.name === 'Vendors' && location.pathname === '/vendors') ||
-                (item.name === 'Staff' && location.pathname === '/staff')
+                (item.name === 'Staff' && location.pathname === '/staff') ||
+                (item.name === 'Accounts' && location.pathname === '/accounts')
               const btnClass = `
                 w-full h-[36px] flex items-center px-3.5 rounded-[8px] text-[13px] font-medium transition-all duration-150 cursor-pointer
                 ${isActive
@@ -94,7 +95,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, darkMode, setDarkMode }) {
                 </>
               )
 
-              if (item.name === 'Dashboard' || item.name === 'Products' || item.name === 'Customers' || item.name === 'Orders' || item.name === 'Vendors' || item.name === 'Staff') {
+              if (item.name === 'Dashboard' || item.name === 'Products' || item.name === 'Customers' || item.name === 'Orders' || item.name === 'Vendors' || item.name === 'Staff' || item.name === 'Accounts') {
                 const path = item.name === 'Dashboard'
                   ? '/dashboard'
                   : item.name === 'Products'
@@ -105,7 +106,9 @@ function Sidebar({ sidebarOpen, setSidebarOpen, darkMode, setDarkMode }) {
                         ? '/orders'
                         : item.name === 'Vendors'
                           ? '/vendors'
-                          : '/staff'
+                          : item.name === 'Accounts'
+                            ? '/accounts'
+                            : '/staff'
                 return (
                   <Link
                     key={item.name}

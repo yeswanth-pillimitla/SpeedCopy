@@ -14,6 +14,7 @@ import Customers from './pages/Customers.jsx'
 import Vendors from './pages/Vendors.jsx'
 import VendorOnboarding from './pages/VendorOnboarding.jsx'
 import Staff from './pages/Staff.jsx'
+import Accounts from './pages/Accounts.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import Topbar from './components/Topbar.jsx'
 import "./index.css"
@@ -59,6 +60,7 @@ function AppContent() {
               <Route path="/vendors" element={<Vendors />} />
               <Route path="/vendor-onboarding" element={<VendorOnboarding />} />
               <Route path="/staff" element={<Staff />} />
+              <Route path="/accounts" element={<Accounts />} />
             </Routes>
           </div>
         </main>
