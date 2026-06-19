@@ -72,7 +72,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, darkMode, setDarkMode }) {
           </div>
 
           {/* Menu Middle Div */}
-          <nav className="w-full py-3 px-3 overflow-hidden flex-1 shrink-0 space-y-[2px]">
+          <nav className="w-full py-3 px-3 overflow-y-auto flex-1 space-y-[2px]">
             {menuItems.map((item) => {
               const IconComponent = item.icon
               const isActive = (item.name === 'Dashboard' && location.pathname === '/dashboard') ||
@@ -85,7 +85,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen, darkMode, setDarkMode }) {
                 (item.name === 'Referral' && location.pathname === '/referral') ||
                 (item.name === 'Promotions' && location.pathname === '/promotions') ||
                 (item.name === 'Reports' && location.pathname === '/reports') ||
-                (item.name === 'Accounts' && location.pathname === '/accounts')
+                (item.name === 'Accounts' && location.pathname === '/accounts') ||
+                (item.name === 'Settings' && (location.pathname === '/settings' || location.pathname.startsWith('/settings')))
               const btnClass = `
                 w-full h-[36px] flex items-center px-3.5 rounded-[8px] text-[13px] font-medium transition-all duration-150 cursor-pointer
                 ${isActive
@@ -99,7 +100,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen, darkMode, setDarkMode }) {
                 </>
               )
 
-              if (item.name === 'Dashboard' || item.name === 'Products' || item.name === 'Customers' || item.name === 'Orders' || item.name === 'Vendors' || item.name === 'Staff' || item.name === 'Support' || item.name === 'Referral' || item.name === 'Promotions' || item.name === 'Reports' || item.name === 'Accounts') {
+              if (item.name === 'Dashboard' || item.name === 'Products' || item.name === 'Customers' || item.name === 'Orders' || item.name === 'Vendors' || item.name === 'Staff' || item.name === 'Support' || item.name === 'Referral' || item.name === 'Promotions' || item.name === 'Reports' || item.name === 'Accounts' || item.name === 'Settings') {
                 const path = item.name === 'Dashboard'
                   ? '/dashboard'
                   : item.name === 'Products'
@@ -110,26 +111,62 @@ function Sidebar({ sidebarOpen, setSidebarOpen, darkMode, setDarkMode }) {
                         ? '/orders'
                         : item.name === 'Vendors'
                           ? '/vendors'
-                          : item.name === 'Support'
-                            ? '/support'
-                            : item.name === 'Referral'
-                              ? '/referral'
-                              : item.name === 'Promotions'
-                                ? '/promotions'
-                                : item.name === 'Reports'
-                                  ? '/reports'
-                                  : item.name === 'Accounts'
-                                    ? '/accounts'
-                                    : '/staff'
+                          : item.name === 'Staff'
+                            ? '/staff'
+                            : item.name === 'Support'
+                              ? '/support'
+                              : item.name === 'Referral'
+                                ? '/referral'
+                                : item.name === 'Promotions'
+                                  ? '/promotions'
+                                  : item.name === 'Reports'
+                                    ? '/reports'
+                                    : item.name === 'Accounts'
+                                      ? '/accounts'
+                                      : item.name === 'Settings'
+                                        ? '/settings?tab=cms'
+                                        : '/dashboard'
+                const searchParams = new URLSearchParams(location.search)
+                const activeTab = searchParams.get('tab') || 'cms'
                 return (
-                  <Link
-                    key={item.name}
-                    to={path}
-                    onClick={() => setSidebarOpen(false)}
-                    className={btnClass}
-                  >
-                    {innerContent}
-                  </Link>
+                  <div key={item.name} className="flex flex-col w-full">
+                    <Link
+                      to={path}
+                      onClick={() => setSidebarOpen(false)}
+                      className={btnClass}
+                    >
+                      {innerContent}
+                    </Link>
+                    {item.name === 'Settings' && (location.pathname === '/settings' || location.pathname.startsWith('/settings')) && (
+                      <div className="mt-0.5 ml-5 flex flex-col gap-0.5">
+                        {[
+                          { name: 'CMS Setting', id: 'cms' },
+                          { name: 'Product setting', id: 'product' },
+                          { name: 'Vendor Setting', id: 'vendor' },
+                          { name: 'Staff Setting', id: 'staff' },
+                          { name: 'Security Setting', id: 'security' },
+                          { name: 'Referral Setting', id: 'referral' },
+                          { name: 'Audit Logs', id: 'audit' },
+                          { name: 'Notification setting', id: 'notification' }
+                        ].map((subItem) => {
+                          const isSubActive = activeTab === subItem.id;
+                          return (
+                            <Link
+                              key={subItem.id}
+                              to={`/settings?tab=${subItem.id}`}
+                              className={`px-3 py-1.5 text-[13px] rounded-md transition-colors ${
+                                isSubActive
+                                  ? 'text-black font-semibold bg-[#F1F5F9]'
+                                  : 'text-gray-500 hover:text-black hover:bg-gray-50 font-medium'
+                              }`}
+                            >
+                              {subItem.name}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
                 )
               }
 

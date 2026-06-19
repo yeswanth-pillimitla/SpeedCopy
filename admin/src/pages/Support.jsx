@@ -289,12 +289,12 @@ function TicketDetailView({ ticket, onBack, onUpdateTicket, agents, showToast })
   return (
     <motion.div initial="hidden" animate="visible" variants={pageVariants} className="w-full">
       {/* Two-column layout */}
-      <div className="flex gap-8">
+      <div className="flex flex-col lg:flex-row gap-8">
         {/* Left Column – Header, Title, and Main Content */}
         <div className="flex-1 flex flex-col">
           {/* Top Header Bar */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+        <div className="flex items-center gap-2 flex-wrap">
               <button onClick={onBack} className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors text-slate-500 hover:text-[#0F172A] cursor-pointer shrink-0">
                 <FiArrowLeft size={20} />
               </button>
@@ -308,7 +308,7 @@ function TicketDetailView({ ticket, onBack, onUpdateTicket, agents, showToast })
                 {ticket.priority}
               </span>
             </div>
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2 flex-wrap">
               {ticket.status !== 'Escalated' && (
                 <button
                   onClick={() => {
@@ -443,8 +443,8 @@ function TicketDetailView({ ticket, onBack, onUpdateTicket, agents, showToast })
                 onChange={e => setReplyText(e.target.value)}
               />
               {/* Bottom bar */}
-              <div className="flex items-center justify-between px-4 py-3 border-t border-[#E2E8F0] bg-white">
-                <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between px-4 py-3 border-t border-[#E2E8F0] bg-white">
+                <div className="flex items-center gap-4 flex-wrap">
                   <button
                     type="button"
                     onClick={() => setReplyType('Public Reply')}
@@ -491,7 +491,7 @@ function TicketDetailView({ ticket, onBack, onUpdateTicket, agents, showToast })
         </div>
 
         {/* Right Sidebar */}
-        <div className="w-[320px] shrink-0 border-l border-[#E2E8F0] pl-8 flex flex-col gap-8">
+        <div className="w-full lg:w-[320px] shrink-0 border-t lg:border-t-0 lg:border-l border-[#E2E8F0] pt-6 lg:pt-0 lg:pl-8 flex flex-col gap-8">
           {/* Customer Details */}
           <div className="flex flex-col gap-4">
             <h3 className="text-[13px] font-semibold text-[#64748B] mb-2">Customer Details</h3>
@@ -799,7 +799,7 @@ export default function Support() {
   return (
     <motion.div initial="hidden" animate="visible" variants={pageVariants} className="w-full flex flex-col gap-6 relative">
       {/* ─── HEADER ─── */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-[24px] font-black text-gray-900 tracking-tight font-sans">Support</h1>
@@ -847,7 +847,7 @@ export default function Support() {
       </div>
 
       {/* ─── STAT CARDS ─── */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Open Tickets */}
         <motion.div whileHover={{ y: -2 }} className="bg-white border border-[#E2E8F0] rounded-[14px] p-5 flex flex-col justify-between shadow-[0px_1px_2px_-1px_#0000001A,0px_1px_3px_0px_#0000001A] min-h-[120px]">
           <div className="flex items-start justify-between">
@@ -906,7 +906,7 @@ export default function Support() {
       </div>
 
       {/* ─── TAB NAVIGATION ─── */}
-      <div className="border-b border-[#E2E8F0] flex items-center gap-6">
+      <div className="border-b border-[#E2E8F0] flex items-center gap-6 overflow-x-auto">
         {[
           { key: 'ticket', label: 'Ticket Management' },
           { key: 'livechat', label: 'Live Chat' },
@@ -972,7 +972,7 @@ export default function Support() {
       {/* ─── CREATE NEW TICKET MODAL ─── */}
       <AnimatePresence>
         {isNewTicketModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -982,11 +982,11 @@ export default function Support() {
               className="absolute inset-0 bg-[#0F172A]/40 backdrop-blur-[2px]"
             />
             {/* Modal Body */}
-            <motion.div
+             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative bg-white rounded-2xl border border-[#E2E8F0] shadow-2xl w-full max-w-[500px] p-6 overflow-hidden z-10"
+              className="relative bg-white rounded-2xl border border-[#E2E8F0] shadow-2xl w-full max-w-[500px] p-6 overflow-y-auto max-h-[calc(100vh-2rem)] z-10"
             >
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-[18px] font-bold text-[#0F172A]">Create New Ticket</h3>
@@ -1012,7 +1012,7 @@ export default function Support() {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block font-bold text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">User Type</label>
                     <select
@@ -1041,7 +1041,7 @@ export default function Support() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block font-bold text-slate-500 mb-1.5 uppercase tracking-wider text-[10px]">Priority</label>
                     <select
@@ -1160,7 +1160,7 @@ function TicketManagementTab({
   return (
     <div className="bg-white border border-[#E2E8F0] rounded-[14px] overflow-hidden shadow-xs">
       {/* Filter bar */}
-      <div className="p-4 flex items-center justify-between gap-3 border-b border-[#E2E8F0]">
+      <div className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-[#E2E8F0]">
         <div className="flex items-center gap-3">
           <div className="relative">
             <FiSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-450" />
@@ -1242,7 +1242,7 @@ function TicketManagementTab({
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full min-w-[850px]">
           <thead>
             <tr className="bg-[#F8FAFC] h-10 border-b border-[#E2E8F0]">
               <th className="px-6 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-[#64748B]">Ticket</th>
@@ -1381,7 +1381,7 @@ function LiveChatTab({
       </div>
 
       {/* Two-column settings */}
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left: Toggles */}
         <div className="flex flex-col gap-8">
           {/* Toggle 1 */}
@@ -1436,7 +1436,7 @@ function LiveChatTab({
               onChange={e => setLiveChatConfig({ ...liveChatConfig, offlineMessage: e.target.value })}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="text-[13px] font-bold text-[#0F172A] mb-2 block">Business Hours Start</label>
               <input
@@ -1463,7 +1463,7 @@ function LiveChatTab({
       <div className="border border-[#E2E8F0] rounded-2xl bg-[#F8FAFC] mt-8 p-6 shadow-2xs">
         <h3 className="text-[14px] font-bold text-[#0F172A] mb-1">Current Agent Status</h3>
         <p className="text-[12px] text-slate-400 font-semibold mb-4">Click agent card to cycle status (Online ➔ Busy ➔ Offline).</p>
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {agents.map(agent => (
             <div
               key={agent.name}

@@ -19,6 +19,7 @@ import Promotions from './pages/Promotions.jsx';
 import Support from './pages/Support.jsx';
 import Reports from './pages/Reports.jsx';
 import Accounts from './pages/Accounts.jsx'
+import Settings from './pages/Settings.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import Topbar from './components/Topbar.jsx'
 import "./index.css"
@@ -69,6 +70,7 @@ function AppContent() {
               <Route path="/support" element={<Support />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/accounts" element={<Accounts />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </div>
         </main>

@@ -296,7 +296,7 @@ export default function Reports() {
       className="w-full flex flex-col gap-6"
     >
       {/* ─── HEADER ─── */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-[24px] font-black text-gray-900 tracking-tight font-sans">
@@ -354,7 +354,7 @@ export default function Reports() {
       </div>
 
       {/* ─── STAT CARDS ─── */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Revenue - dark card */}
         <motion.div
           whileHover={{ y: -2 }}
@@ -442,7 +442,7 @@ export default function Reports() {
 
       {/* ─── TAB NAVIGATION ─── */}
       <div className="bg-white border border-[#E2E8F0] rounded-[14px] shadow-xs overflow-hidden">
-        <div className="border-b border-[#E2E8F0] px-6 flex items-center gap-6">
+        <div className="border-b border-[#E2E8F0] px-6 flex items-center gap-6 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -478,7 +478,7 @@ function SalesOverviewTab() {
   return (
     <div className="flex flex-col gap-6">
       {/* Row 1: Revenue Trend + Platform Health */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Daily Revenue Trend */}
         <div className="bg-white border border-[#E2E8F0] rounded-[14px] p-5 shadow-xs">
           <h3 className="text-[15px] font-bold text-[#0F172A]">
@@ -674,7 +674,7 @@ function CustomerAnalyticsTab() {
   return (
     <div className="flex flex-col gap-6">
       {/* Stat Cards */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {statsCards.map((card, idx) => (
           <motion.div
             key={idx}
@@ -697,7 +697,7 @@ function CustomerAnalyticsTab() {
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* New vs Returning */}
         <div className="bg-white border border-[#E2E8F0] rounded-[14px] p-5 shadow-xs">
           <h3 className="text-[15px] font-bold text-[#0F172A]">
@@ -815,7 +815,7 @@ function VendorPerformanceTab() {
   return (
     <div className="flex flex-col gap-6">
       {/* Stat Cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <motion.div
           whileHover={{ y: -2 }}
           className="bg-white border border-[#E2E8F0] rounded-[14px] p-5 shadow-xs flex items-center gap-4"
@@ -870,7 +870,8 @@ function VendorPerformanceTab() {
             <FiDownload size={14} /> Export
           </button>
         </div>
-        <table className="w-full">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[750px]">
           <thead>
             <tr className="bg-[#F8FAFC] h-10 border-b border-[#E2E8F0]">
               <th className="px-6 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
@@ -950,6 +951,7 @@ function VendorPerformanceTab() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );
@@ -962,7 +964,7 @@ function ProductInsightsTab() {
   return (
     <div className="flex flex-col gap-6">
       {/* Stat Cards */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <motion.div
           whileHover={{ y: -2 }}
           className="bg-white border border-[#E2E8F0] rounded-[14px] p-5 shadow-xs flex items-center gap-4"
@@ -1008,7 +1010,8 @@ function ProductInsightsTab() {
 
           <div className="w-[108px] h-[61.6px] rounded-[12px] border border-[#E2E8F0] bg-white" />
         </div>
-        <table className="w-full">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[700px]">
           <thead>
             <tr className="bg-[#F8FAFC] h-10 border-b border-[#E2E8F0]">
               <th className="px-6 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
@@ -1108,6 +1111,7 @@ function ProductInsightsTab() {
             })}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );
@@ -1129,24 +1133,32 @@ function GeoCohortTab() {
         </p>
         <div className="flex flex-col gap-6 mt-5">
           {cityData.map((city) => (
-            <div key={city.city} className="flex items-center gap-4">
-              <div className="flex items-center gap-2 w-[120px] shrink-0">
-                <FiMapPin size={16} className="text-[#94A3B8] shrink-0" />
-                <span className="text-[14px] font-bold text-gray-900">
-                  {city.city}
-                </span>
+            <div key={city.city} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <div className="flex items-center justify-between sm:justify-start gap-2 w-full sm:w-[120px] sm:shrink-0">
+                <div className="flex items-center gap-2">
+                  <FiMapPin size={16} className="text-[#94A3B8] shrink-0" />
+                  <span className="text-[14px] font-bold text-gray-900">
+                    {city.city}
+                  </span>
+                </div>
+                {/* Mobile-only value display */}
+                <div className="sm:hidden text-right flex items-center gap-1.5">
+                  <span className="text-[14px] font-bold text-gray-900">{city.revenue}</span>
+                  <span className="text-[11px] text-slate-400 font-medium">({city.orders})</span>
+                </div>
               </div>
-              <div className="flex-1 bg-[#F1F5F9] rounded-full h-9 relative overflow-hidden">
+              <div className="flex-1 bg-[#F1F5F9] rounded-full h-8 sm:h-9 relative overflow-hidden w-full">
                 <div
                   className="bg-black h-full rounded-full flex items-center justify-end pr-4"
                   style={{ width: `${city.percent}%` }}
                 >
-                  <span className="text-[12px] font-bold text-white">
+                  <span className="text-[11px] sm:text-[12px] font-bold text-white">
                     {city.percent}%
                   </span>
                 </div>
               </div>
-              <div className="text-right w-[120px] shrink-0 flex flex-col justify-center">
+              {/* Desktop-only value display */}
+              <div className="hidden sm:flex text-right w-[120px] shrink-0 flex-col justify-center">
                 <p className="text-[14px] font-bold text-gray-900 leading-tight">
                   {city.revenue}
                 </p>
@@ -1168,7 +1180,7 @@ function GeoCohortTab() {
           Week-over-week retention by acquisition month (%)
         </p>
         <div className="mt-5 overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[600px]">
             <thead>
               <tr className="border-b border-[#E2E8F0]">
                 <th className="px-4 py-3 text-left text-[12px] font-bold text-[#64748B]">

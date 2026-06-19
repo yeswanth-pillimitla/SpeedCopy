@@ -48,7 +48,7 @@ function StatCard({ title, value, sub, icon: Icon, iconBg }) {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
-      className="flex-1 min-w-[180px] bg-white rounded-[14px] border border-[#E2E8F0] p-5 flex items-start justify-between gap-3 shadow-sm"
+      className="w-full bg-white rounded-[14px] border border-[#E2E8F0] p-5 flex items-start justify-between gap-3 shadow-sm"
     >
       <div className="flex flex-col gap-1.5">
         <span className="text-[12px] text-slate-500 font-medium leading-none">{title}</span>
@@ -71,33 +71,33 @@ function TrackingRow({ link, onCopy, onDelete, copiedId }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.97 }}
       transition={{ duration: 0.25 }}
-      className="flex items-center gap-4 py-4 px-4 border border-[#E2E8F0] rounded-[10px] bg-white hover:bg-[#F8FAFC] transition-colors group"
+      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 py-4 px-4 border border-[#E2E8F0] rounded-[10px] bg-white hover:bg-[#F8FAFC] transition-colors group"
     >
-      {/* Link icon */}
-      <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-        <LuLink2 className="w-3.5 h-3.5 text-slate-500" />
+      {/* Left section: Name + URL + icon */}
+      <div className="flex items-center gap-3 flex-1 min-w-0">
+        <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
+          <LuLink2 className="w-3.5 h-3.5 text-slate-500" />
+        </div>
+        <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+          <span className="text-[13px] font-semibold text-slate-800 leading-none">{link.name}</span>
+          <span className="text-[11px] text-slate-400 truncate">{link.url}</span>
+        </div>
       </div>
 
-      {/* Name + URL */}
-      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-        <span className="text-[13px] font-semibold text-slate-800 leading-none">{link.name}</span>
-        <span className="text-[11px] text-slate-400 truncate">{link.url}</span>
-      </div>
-
-      {/* Stats */}
-      <div className="flex items-center gap-8 shrink-0">
-        <div className="flex flex-col items-end">
+      {/* Stats section */}
+      <div className="flex items-center gap-8 shrink-0 justify-between sm:justify-end w-full sm:w-auto border-t sm:border-t-0 pt-2.5 sm:pt-0 border-slate-100">
+        <div className="flex flex-col items-start sm:items-end">
           <span className="text-[13px] font-bold text-slate-800">{link.clicks.toLocaleString()}</span>
           <span className="text-[10px] text-slate-400 font-medium">Clicks</span>
         </div>
-        <div className="flex flex-col items-end">
+        <div className="flex flex-col items-start sm:items-end">
           <span className="text-[13px] font-bold text-slate-800">{link.signups}</span>
           <span className="text-[10px] text-slate-400 font-medium">Sign-ups</span>
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="flex items-center gap-1.5 shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
+      {/* Actions section */}
+      <div className="flex items-center gap-1.5 shrink-0 justify-end w-full sm:w-auto opacity-100 sm:opacity-60 sm:group-hover:opacity-100 transition-opacity border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-100">
         <button
           title="Open link"
           className="w-7 h-7 rounded-[7px] flex items-center justify-center hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
@@ -350,7 +350,7 @@ export default function Referral() {
       </div>
 
       {/* ── Stats Cards ──────────────────────────────────────────────── */}
-      <div className="flex gap-4 flex-wrap">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s, i) => (
           <StatCard key={i} {...s} />
         ))}

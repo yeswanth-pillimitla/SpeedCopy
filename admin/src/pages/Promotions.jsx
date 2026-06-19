@@ -410,7 +410,7 @@ function CreateNotificationModal({ onClose, onSend }) {
           {/* Message Templates */}
           <div className="flex flex-col gap-1.5">
             <span className="text-[12px] font-bold text-slate-700">Message Templates</span>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {templates.map(t => {
                 const Icon = t.icon
                 const isSelected = template === t.name
@@ -518,7 +518,7 @@ function CreateNotificationModal({ onClose, onSend }) {
             </div>
 
             {scheduleType === 'later' && (
-              <div className="grid grid-cols-2 gap-3 mt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] text-slate-400 font-bold">Date</span>
                   <input
@@ -742,7 +742,7 @@ export default function Promotions() {
         </div>
 
         {/* Tab Filters */}
-        <div className="flex gap-4 border-b border-[#E2E8F0] px-5 py-2.5 bg-[#F8FAFC]">
+        <div className="flex gap-4 border-b border-[#E2E8F0] px-5 py-2.5 bg-[#F8FAFC] overflow-x-auto">
           {['All Offers', 'Flat Discount', 'Percentage', 'Vendor Offer', 'Category Offer'].map(tab => (
             <button
               key={tab}
