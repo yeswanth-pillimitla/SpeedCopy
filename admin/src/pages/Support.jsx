@@ -243,6 +243,34 @@ function TicketDetailView({ ticket, onBack, onUpdateTicket, agents, showToast })
   const [replyText, setReplyText] = useState('');
   const [replyType, setReplyType] = useState('Public Reply'); // 'Public Reply' or 'Internal Note'
   const [isAssigneeDropdownOpen, setIsAssigneeDropdownOpen] = useState(false);
+  const [isTemplatesDropdownOpen, setIsTemplatesDropdownOpen] = useState(false);
+
+  const canvaTemplates = [
+    {
+      name: "🕐 Clock Customizer Guide",
+      text: "Hi! Regarding the Clock Canvas customizer: it supports shape settings (Circle, Square, Curved Edges), dial layouts (numbers, roman numerals, ticks), and hands movement (sweep, tick, or static). Let us know if you need assistance!"
+    },
+    {
+      name: "🖼️ Photo Frame Layouts",
+      text: "Hi! Regarding the Photo Frame Canvas customizer: you can select from Oak Wood, Ebony Wood, or Mahogany wood finishes, and customize the grids to Single, 2x2, or 3x2 layouts. Let us know if you need assistance!"
+    },
+    {
+      name: "📄 Letterhead Layouts",
+      text: "Hi! Regarding the Letterhead Canvas: you can choose Modern, Corporate, or Sidebar layouts, insert your company name/address, and upload your custom logo. Let us know if you need assistance!"
+    },
+    {
+      name: "☕ Custom Mug Presets",
+      text: "Hi! Regarding the Custom Mug Canvas: we support Standard White, Pink Inner, Black Gold, Valentine, and Birthday presets with high-resolution photo slots. Let us know if you need assistance!"
+    },
+    {
+      name: "✒️ Premium Pen Engraving",
+      text: "Hi! Regarding the Premium Pen Canvas: we offer Classic, Executive, and Fountain designs with golden/chrome trims and customizable text engraving. Let us know if you need assistance!"
+    },
+    {
+      name: "🪪 Name Plate Options",
+      text: "Hi! Regarding the Name Plate Canvas: you can select Rectangle, Oval, or Bevel designs with solid brass mountings and custom titles. Let us know if you need assistance!"
+    }
+  ];
 
   const handleSendReply = () => {
     if (!replyText.trim()) return;
@@ -419,9 +447,9 @@ function TicketDetailView({ ticket, onBack, onUpdateTicket, agents, showToast })
             </div>
 
             {/* Reply Editor */}
-            <div className="border border-[#E2E8F0] rounded-xl overflow-hidden bg-white shadow-2xs flex flex-col">
+            <div className="border border-[#E2E8F0] rounded-xl bg-white shadow-2xs flex flex-col relative">
               {/* Toolbar */}
-              <div className="flex items-center gap-3 bg-[#F8FAFC] px-4 py-3 border-b border-[#E2E8F0]">
+              <div className="flex items-center gap-3 bg-[#F8FAFC] px-4 py-3 border-b border-[#E2E8F0] rounded-t-xl">
                 <button onClick={() => handleToolbarAction('bold')} className="p-1 text-slate-500 hover:text-[#0F172A] transition-colors cursor-pointer"><FiBold size={14} /></button>
                 <button onClick={() => handleToolbarAction('italic')} className="p-1 text-slate-500 hover:text-[#0F172A] transition-colors cursor-pointer"><FiItalic size={14} /></button>
                 <button onClick={() => handleToolbarAction('underline')} className="p-1 text-slate-500 hover:text-[#0F172A] transition-colors cursor-pointer"><FiUnderline size={14} /></button>
@@ -430,10 +458,41 @@ function TicketDetailView({ ticket, onBack, onUpdateTicket, agents, showToast })
                 <div className="w-px h-4 bg-[#E2E8F0]" />
                 <button onClick={() => handleToolbarAction('link')} className="p-1 text-slate-500 hover:text-[#0F172A] transition-colors cursor-pointer"><FiLink size={14} /></button>
                 <button onClick={() => handleToolbarAction('attachment')} className="p-1 text-slate-500 hover:text-[#0F172A] transition-colors cursor-pointer"><FiPaperclip size={14} /></button>
-                <div className="w-px h-4 bg-[#E2E8F0]" />
-                <button className="text-[12px] font-medium text-slate-500 hover:text-[#0F172A] flex items-center gap-1 transition-colors cursor-pointer">
-                  Templates <FiChevronDown size={12} />
-                </button>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setIsTemplatesDropdownOpen(!isTemplatesDropdownOpen)}
+                    className="text-[12px] font-semibold text-slate-500 hover:text-[#0F172A] flex items-center gap-1 transition-colors cursor-pointer p-1"
+                  >
+                    Templates <FiChevronDown size={12} className={`transform transition-transform ${isTemplatesDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {isTemplatesDropdownOpen && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setIsTemplatesDropdownOpen(false)} />
+                      <div className="absolute right-0 mt-1.5 w-64 bg-white border border-[#E2E8F0] shadow-lg rounded-xl py-2 z-20 text-[13px] font-medium animate-in fade-in slide-in-from-top-1 duration-150">
+                        <div className="px-3 py-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 mb-1.5">
+                          Canva Templates
+                        </div>
+                        <div className="max-h-48 overflow-y-auto flex flex-col">
+                          {canvaTemplates.map((tpl, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={() => {
+                                setReplyText(prev => prev ? `${prev}\n\n${tpl.text}` : tpl.text);
+                                setIsTemplatesDropdownOpen(false);
+                              }}
+                              className="w-full text-left px-3 py-2 text-[#0F172A] hover:bg-slate-50 transition-colors flex flex-col gap-0.5 cursor-pointer"
+                            >
+                              <span className="font-bold text-[12.5px]">{tpl.name}</span>
+                              <span className="text-[10.5px] text-slate-400 truncate w-full">{tpl.text}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
               {/* Textarea */}
               <textarea
@@ -443,7 +502,7 @@ function TicketDetailView({ ticket, onBack, onUpdateTicket, agents, showToast })
                 onChange={e => setReplyText(e.target.value)}
               />
               {/* Bottom bar */}
-              <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between px-4 py-3 border-t border-[#E2E8F0] bg-white">
+              <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between px-4 py-3 border-t border-[#E2E8F0] bg-white rounded-b-xl">
                 <div className="flex items-center gap-4 flex-wrap">
                   <button
                     type="button"

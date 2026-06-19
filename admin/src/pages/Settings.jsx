@@ -13,6 +13,7 @@ import {
   FiX,
   FiChevronDown
 } from 'react-icons/fi';
+import CanvasPreviewRender from '../components/previews/CanvasPreviewRender.jsx';
 
 // Page animations
 const pageVariants = {
@@ -100,6 +101,7 @@ export default function Settings() {
     { id: 3, name: 'Shopping', count: 24, status: 'Active' }
   ]);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState(null); // null = adding new, object = editing existing
   const [newCategory, setNewCategory] = useState({
     name: '',
     parent: 'None',
@@ -114,6 +116,46 @@ export default function Settings() {
     gridSnap: true,
     showGrid: true
   });
+  // Which canvas card is selected (null = modal closed)
+  const [selectedCanvasName, setSelectedCanvasName] = useState(null);
+  const [modalShape, setModalShape] = useState('circle');
+  const [modalProductName, setModalProductName] = useState('');
+  const [modalUploadImage, setModalUploadImage] = useState(true);
+  const [modalUploadCanvas, setModalUploadCanvas] = useState(false);
+  const [modalClockDialType, setModalClockDialType] = useState('numbers');
+  const [modalClockHandMovement, setModalClockHandMovement] = useState('sweep');
+
+  useEffect(() => {
+    if (selectedCanvasName) {
+      let defaultShape = 'circle';
+      let defaultName = '';
+      if (selectedCanvasName === 'Clock') {
+        defaultShape = 'circle';
+        defaultName = 'Clock - Circle';
+      } else if (selectedCanvasName === 'Frame') {
+        defaultShape = 'oak';
+        defaultName = 'Frame - Oak Wood';
+      } else if (selectedCanvasName === 'Letterhead') {
+        defaultShape = 'modern';
+        defaultName = 'Letterhead - Modern Line';
+      } else if (selectedCanvasName === 'Mug') {
+        defaultShape = 'standard';
+        defaultName = 'Mug - Standard White';
+      } else if (selectedCanvasName === 'Pen') {
+        defaultShape = 'classic';
+        defaultName = 'Pen - Classic Gold';
+      } else if (selectedCanvasName === 'Plate') {
+        defaultShape = 'rectangle';
+        defaultName = 'Plate - Rectangle Border';
+      }
+      setModalShape(defaultShape);
+      setModalProductName(defaultName);
+      setModalUploadImage(true);
+      setModalUploadCanvas(false);
+      setModalClockDialType('numbers');
+      setModalClockHandMovement('sweep');
+    }
+  }, [selectedCanvasName]);
 
   // Delivery settings
   const [deliverySettings, setDeliverySettings] = useState({
@@ -305,11 +347,20 @@ export default function Settings() {
 
   const handleAddCategorySubmit = (e) => {
     e.preventDefault();
-    if (!newCategory.name.trim()) return;
-    const newId = Date.now();
-    setCategories(prev => [...prev, { id: newId, name: newCategory.name, count: 0, status: 'Active' }]);
-    showToast(`Category "${newCategory.name}" created successfully!`, 'success');
+    if (editingCategory) {
+      // Update existing category
+      setCategories(prev => prev.map(c =>
+        c.id === editingCategory.id ? { ...c, name: newCategory.name, parent: newCategory.parent, desc: newCategory.desc } : c
+      ));
+      showToast(`Category "${newCategory.name}" updated successfully!`, 'success');
+    } else {
+      if (!newCategory.name.trim()) return;
+      const newId = Date.now();
+      setCategories(prev => [...prev, { id: newId, name: newCategory.name, count: 0, status: 'Active' }]);
+      showToast(`Category "${newCategory.name}" created successfully!`, 'success');
+    }
     setNewCategory({ name: '', parent: 'None', desc: '', thumbnail: null });
+    setEditingCategory(null);
     setIsCategoryModalOpen(false);
   };
 
@@ -718,7 +769,11 @@ export default function Settings() {
                           </td>
                           <td className="py-4 px-5 text-right">
                             <button
-                              onClick={() => showToast(`Opening manage console for ${c.name}`, 'info')}
+                              onClick={() => {
+                                setEditingCategory(c);
+                                setNewCategory({ name: c.name, parent: c.parent || 'None', desc: c.desc || '', thumbnail: c.thumbnail || null });
+                                setIsCategoryModalOpen(true);
+                              }}
                               className="text-[13px] font-bold text-blue-600 hover:underline cursor-pointer"
                             >
                               Manage
@@ -758,6 +813,33 @@ export default function Settings() {
                     />
                   </div>
                 </div>
+
+                {/* ── Pre-built Product Canvases ── */}
+                <div className="pt-2">
+                  <h4 className="text-[15px] font-bold text-[#0F172A] mb-1">Pre-built Product Canvases</h4>
+                  <p className="text-[13px] text-slate-500 font-semibold mb-4">Click a canvas to open its full preview.</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+                    {[
+                      { name: 'Clock',       icon: '🕐', desc: 'Circular & square clocks' },
+                      { name: 'Frame',       icon: '🖼️', desc: 'Photo frames & borders' },
+                      { name: 'Letterhead',  icon: '📄', desc: 'Office letterheads' },
+                      { name: 'Mug',         icon: '☕', desc: 'Custom printed mugs' },
+                      { name: 'Pen',         icon: '✒️', desc: 'Engraved pens' },
+                      { name: 'Plate',       icon: '🪪', desc: 'Name & decorative plates' }
+                    ].map(({ name, icon, desc }) => (
+                      <button
+                        key={name}
+                        onClick={() => setSelectedCanvasName(name)}
+                        className="flex flex-col items-center gap-2 p-4 border border-[#E2E8F0] rounded-xl bg-[#F8FAFC] hover:bg-white hover:shadow-md hover:border-black transition-all cursor-pointer text-center"
+                      >
+                        <span className="text-3xl">{icon}</span>
+                        <span className="text-[13px] font-bold text-[#0F172A]">{name}</span>
+                        <span className="text-[11px] text-slate-400 font-medium leading-tight">{desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="flex justify-end border-t border-slate-100 pt-4">
                   <button
                     onClick={() => showToast('Canvas bounds updated successfully!', 'success')}
@@ -2630,10 +2712,14 @@ export default function Settings() {
           >
             {/* Modal Header */}
             <div className="px-6 pt-6 pb-5 border-b border-[#E2E8F0] relative">
-              <h3 className="text-[18px] font-bold text-[#0F172A] font-sans">Add Category</h3>
-              <p className="text-[13px] text-slate-500 font-semibold mt-1">Create a new product grouping for your store's inventory.</p>
+              <h3 className="text-[18px] font-bold text-[#0F172A] font-sans">
+                {editingCategory ? `Manage: ${editingCategory.name}` : 'Add Category'}
+              </h3>
+              <p className="text-[13px] text-slate-500 font-semibold mt-1">
+                {editingCategory ? 'View and edit the details of this product category.' : "Create a new product grouping for your store's inventory."}
+              </p>
               <button
-                onClick={() => setIsCategoryModalOpen(false)}
+                onClick={() => { setIsCategoryModalOpen(false); setEditingCategory(null); setNewCategory({ name: '', parent: 'None', desc: '', thumbnail: null }); }}
                 className="absolute top-5 right-5 text-slate-400 hover:text-black cursor-pointer p-1"
               >
                 <FiX size={18} />
@@ -2650,10 +2736,11 @@ export default function Settings() {
                     <input
                       type="text"
                       value={newCategory.name}
-                      onChange={e => setNewCategory({ ...newCategory, name: e.target.value })}
+                      onChange={e => !editingCategory && setNewCategory({ ...newCategory, name: e.target.value })}
                       placeholder="e.g. Smartphones"
                       required
-                      className="h-10 px-3.5 rounded-lg border border-[#E2E8F0] text-[13px] focus:outline-none focus:ring-1 focus:ring-black font-semibold text-[#0F172A]"
+                      readOnly={!!editingCategory}
+                      className={`h-10 px-3.5 rounded-lg border border-[#E2E8F0] text-[13px] focus:outline-none focus:ring-1 focus:ring-black font-semibold text-[#0F172A] ${editingCategory ? 'bg-slate-50 cursor-default' : ''}`}
                     />
                   </div>
                   {/* Parent Category */}
@@ -2662,8 +2749,9 @@ export default function Settings() {
                     <div className="relative">
                       <select
                         value={newCategory.parent}
-                        onChange={e => setNewCategory({ ...newCategory, parent: e.target.value })}
-                        className="w-full h-10 pl-3.5 pr-8 rounded-lg border border-[#E2E8F0] text-[13px] focus:outline-none focus:ring-1 focus:ring-black font-semibold text-[#0F172A] bg-white appearance-none cursor-pointer"
+                        onChange={e => !editingCategory && setNewCategory({ ...newCategory, parent: e.target.value })}
+                        disabled={!!editingCategory}
+                        className={`w-full h-10 pl-3.5 pr-8 rounded-lg border border-[#E2E8F0] text-[13px] focus:outline-none focus:ring-1 focus:ring-black font-semibold text-[#0F172A] bg-white appearance-none ${editingCategory ? 'cursor-default bg-slate-50' : 'cursor-pointer'}`}
                       >
                         <option value="None">None</option>
                         <option value="Printing">Printing</option>
@@ -2680,10 +2768,11 @@ export default function Settings() {
                   <label className="text-[13px] font-semibold text-[#0F172A]">Description</label>
                   <textarea
                     value={newCategory.desc}
-                    onChange={e => setNewCategory({ ...newCategory, desc: e.target.value })}
+                    onChange={e => !editingCategory && setNewCategory({ ...newCategory, desc: e.target.value })}
                     placeholder="Briefly describe the contents of this category..."
                     rows={3}
-                    className="p-3.5 rounded-lg border border-[#E2E8F0] text-[13px] focus:outline-none focus:ring-1 focus:ring-black font-semibold text-[#0F172A] resize-none w-full"
+                    readOnly={!!editingCategory}
+                    className={`p-3.5 rounded-lg border border-[#E2E8F0] text-[13px] focus:outline-none focus:ring-1 focus:ring-black font-semibold text-[#0F172A] resize-none w-full ${editingCategory ? 'bg-slate-50 cursor-default' : ''}`}
                   />
                 </div>
 
@@ -2712,7 +2801,7 @@ export default function Settings() {
               <div className="flex items-center justify-end gap-3 px-6 py-4 bg-[#F8FAFC] border-t border-[#E2E8F0]">
                 <button
                   type="button"
-                  onClick={() => setIsCategoryModalOpen(false)}
+                  onClick={() => { setIsCategoryModalOpen(false); setEditingCategory(null); setNewCategory({ name: '', parent: 'None', desc: '', thumbnail: null }); }}
                   className="px-5 py-2.5 rounded-xl text-[13px] font-semibold text-slate-500 hover:bg-slate-100 transition-colors cursor-pointer"
                 >
                   Cancel
@@ -2721,7 +2810,7 @@ export default function Settings() {
                   type="submit"
                   className="h-10 px-6 rounded-xl bg-black text-white text-[13px] font-bold hover:bg-slate-800 transition-colors cursor-pointer"
                 >
-                  Add Category
+                  {editingCategory ? 'Save Changes' : 'Add Category'}
                 </button>
               </div>
             </form>
@@ -2808,6 +2897,329 @@ export default function Settings() {
                 </button>
               </div>
             </form>
+          </motion.div>
+        </div>
+      )}
+
+      {/* ── MODAL: CANVAS PREVIEW ── */}
+      {/* ── MODAL: CANVAS PREVIEW ── */}
+      {selectedCanvasName && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            className="bg-white rounded-3xl w-full max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-[800px] shadow-2xl overflow-hidden flex flex-col my-4 md:my-8 max-h-[90vh]"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 md:px-8 py-4 border-b border-[#E2E8F0] bg-slate-50/50">
+              <div>
+                <h3 className="text-[18px] md:text-[20px] font-bold text-[#0F172A]">{selectedCanvasName} Settings</h3>
+                <p className="text-[12px] md:text-[13px] text-slate-500 font-semibold mt-0.5">Customize properties and see live canvas previews.</p>
+              </div>
+              <button
+                onClick={() => setSelectedCanvasName(null)}
+                className="text-slate-400 hover:text-black cursor-pointer p-1.5 hover:bg-slate-100 rounded-full transition-colors"
+              >
+                <FiX size={20} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-5 md:p-6 grid grid-cols-1 md:grid-cols-12 gap-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+              {/* Left Column: Canvas Preview (dashed border) */}
+              <div className="md:col-span-6 flex flex-col justify-center items-center border-3 border-dashed border-[#CBD5E1] rounded-3xl p-4 bg-white relative min-h-[260px] md:min-h-[320px]">
+                <CanvasPreviewRender
+                  canvasName={selectedCanvasName}
+                  shape={modalShape}
+                  dialType={modalClockDialType}
+                  handMovement={modalClockHandMovement}
+                  design={modalShape} // reuse modalShape as design or grid
+                  grid={modalShape === 'circle' ? 'single' : modalShape === 'square' ? '2x2' : '3x2'} // for Frame grid selection
+                  text={selectedCanvasName === 'Pen' ? 'Premium Pen' : 'Acme Corporation'}
+                  title="Olivia Bennett"
+                  subtitle="123 Business St, Innovation Center"
+                />
+              </div>
+
+              {/* Right Column: Settings Panel */}
+              <div className="md:col-span-6 flex flex-col gap-4">
+                {/* Sub Category */}
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex justify-between items-center">
+                    <label className="text-[12px] font-bold text-[#0F172A] uppercase tracking-wide">Sub Category *</label>
+                    <button className="text-[10px] font-bold text-[#2563EB] hover:underline cursor-pointer">+Add input</button>
+                  </div>
+                  <input
+                    type="text"
+                    value={selectedCanvasName}
+                    readOnly
+                    className="h-10 px-3.5 rounded-xl border border-[#E2E8F0] bg-slate-50 text-[13px] font-semibold text-slate-500 focus:outline-none cursor-not-allowed"
+                  />
+                </div>
+
+                {/* Product Name */}
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex justify-between items-center">
+                    <label className="text-[12px] font-bold text-[#0F172A] uppercase tracking-wide">Product Name</label>
+                    <button className="text-[10px] font-bold text-[#2563EB] hover:underline cursor-pointer">+Add Attributes</button>
+                  </div>
+                  <input
+                    type="text"
+                    value={modalProductName}
+                    onChange={(e) => setModalProductName(e.target.value)}
+                    className="h-10 px-3.5 rounded-xl border border-[#E2E8F0] bg-white text-[13px] font-semibold text-[#0F172A] focus:outline-none focus:border-black transition-colors"
+                  />
+                </div>
+
+                {/* Shapes */}
+                <div className="flex flex-col gap-2.5 p-4 bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl">
+                  <label className="text-[12px] font-bold text-[#0F172A] uppercase tracking-wide">Shapes</label>
+                  
+                  <div className="flex flex-wrap gap-3 items-center">
+                    {/* Render dynamically depending on selected canvas */}
+                    {selectedCanvasName === 'Clock' && [
+                      { id: 'square', label: 'Square', shapeClass: 'rounded-md w-11 h-11' },
+                      { id: 'curved-edges', label: 'Curved edges', shapeClass: 'rounded-xl w-11 h-11' },
+                      { id: 'circle', label: 'Circle', shapeClass: 'rounded-full w-11 h-11' }
+                    ].map(opt => (
+                      <button
+                        key={opt.id}
+                        onClick={() => {
+                          setModalShape(opt.id);
+                          setModalProductName(`Clock - ${opt.label}`);
+                        }}
+                        className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all cursor-pointer ${
+                          modalShape === opt.id
+                            ? 'border-black bg-white shadow-xs scale-102 font-bold'
+                            : 'border-transparent hover:border-slate-300'
+                        }`}
+                      >
+                        <div className={`bg-slate-200 border border-slate-300 ${opt.shapeClass}`} />
+                        <span className="text-[10px] text-[#0F172A] font-semibold mt-1">{opt.label}</span>
+                      </button>
+                    ))}
+
+                    {selectedCanvasName === 'Frame' && [
+                      { id: 'oak', label: 'Oak Wood', color: '#854D0E' },
+                      { id: 'ebony', label: 'Ebony Wood', color: '#1E293B' },
+                      { id: 'mahogany', label: 'Mahogany', color: '#7C2D12' }
+                    ].map(opt => (
+                      <button
+                        key={opt.id}
+                        onClick={() => {
+                          setModalShape(opt.id);
+                          setModalProductName(`Frame - ${opt.label}`);
+                        }}
+                        className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all cursor-pointer ${
+                          modalShape === opt.id
+                            ? 'border-black bg-white shadow-xs scale-102 font-bold'
+                            : 'border-transparent hover:border-slate-300'
+                        }`}
+                      >
+                        <div className="w-11 h-11 rounded-lg border border-slate-300 shadow-inner" style={{ backgroundColor: opt.color }} />
+                        <span className="text-[10px] text-[#0F172A] font-semibold mt-1">{opt.label}</span>
+                      </button>
+                    ))}
+
+                    {selectedCanvasName === 'Letterhead' && [
+                      { id: 'modern', label: 'Modern', styleClass: 'border-t-3 border-[#0F172A]' },
+                      { id: 'corporate', label: 'Corporate', styleClass: 'border-t-3 border-[#B45309]' },
+                      { id: 'sidebar', label: 'Sidebar', styleClass: 'border-l-3 border-[#2563EB]' }
+                    ].map(opt => (
+                      <button
+                        key={opt.id}
+                        onClick={() => {
+                          setModalShape(opt.id);
+                          setModalProductName(`Letterhead - ${opt.label}`);
+                        }}
+                        className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all cursor-pointer ${
+                          modalShape === opt.id
+                            ? 'border-black bg-white shadow-xs scale-102 font-bold'
+                            : 'border-transparent hover:border-slate-300'
+                        }`}
+                      >
+                        <div className={`w-11 h-11 bg-slate-100 border border-slate-300 shadow-inner rounded-sm ${opt.styleClass}`} />
+                        <span className="text-[10px] text-[#0F172A] font-semibold mt-1">{opt.label}</span>
+                      </button>
+                    ))}
+
+                    {selectedCanvasName === 'Mug' && [
+                      { id: 'standard', label: 'Standard', color: '#F1F5F9' },
+                      { id: 'inner-pink', label: 'Pink Inner', color: '#F472B6' },
+                      { id: 'black-mug', label: 'Black Gold', color: '#1E293B' },
+                      { id: 'valentine', label: 'Valentine', color: '#F43F5E' }
+                    ].map(opt => (
+                      <button
+                        key={opt.id}
+                        onClick={() => {
+                          setModalShape(opt.id);
+                          setModalProductName(`Mug - ${opt.label}`);
+                        }}
+                        className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all cursor-pointer ${
+                          modalShape === opt.id
+                            ? 'border-black bg-white shadow-xs scale-102 font-bold'
+                            : 'border-transparent hover:border-slate-300'
+                        }`}
+                      >
+                        <div className="w-11 h-11 rounded-full border border-slate-300 shadow-inner" style={{ backgroundColor: opt.color }} />
+                        <span className="text-[10px] text-[#0F172A] font-semibold mt-1">{opt.label}</span>
+                      </button>
+                    ))}
+
+                    {selectedCanvasName === 'Pen' && [
+                      { id: 'classic', label: 'Classic', color: '#0F172A' },
+                      { id: 'executive', label: 'Executive', color: '#94A3B8' },
+                      { id: 'fountain', label: 'Fountain', color: '#D4AF37' }
+                    ].map(opt => (
+                      <button
+                        key={opt.id}
+                        onClick={() => {
+                          setModalShape(opt.id);
+                          setModalProductName(`Pen - ${opt.label}`);
+                        }}
+                        className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all cursor-pointer ${
+                          modalShape === opt.id
+                            ? 'border-black bg-white shadow-xs scale-102 font-bold'
+                            : 'border-transparent hover:border-slate-300'
+                        }`}
+                      >
+                        <div className="w-11 h-5 rounded-full border border-slate-300 shadow-inner mt-3" style={{ backgroundColor: opt.color }} />
+                        <span className="text-[10px] text-[#0F172A] font-semibold mt-1">{opt.label}</span>
+                      </button>
+                    ))}
+
+                    {selectedCanvasName === 'Plate' && [
+                      { id: 'rectangle', label: 'Rectangle', rx: 'rounded-sm' },
+                      { id: 'oval', label: 'Oval', rx: 'rounded-full h-7 w-11 my-2.5' },
+                      { id: 'bevel', label: 'Beveled', rx: 'rounded-md' }
+                    ].map(opt => (
+                      <button
+                        key={opt.id}
+                        onClick={() => {
+                          setModalShape(opt.id);
+                          setModalProductName(`Plate - ${opt.label}`);
+                        }}
+                        className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all cursor-pointer ${
+                          modalShape === opt.id
+                            ? 'border-black bg-white shadow-xs scale-102 font-bold'
+                            : 'border-transparent hover:border-slate-300'
+                        }`}
+                      >
+                        <div className={`bg-slate-100 border border-slate-300 shadow-inner w-11 h-11 ${opt.rx}`} />
+                        <span className="text-[10px] text-[#0F172A] font-semibold mt-1">{opt.label}</span>
+                      </button>
+                    ))}
+
+                    {/* Add Shape Button */}
+                    <button className="flex flex-col items-center justify-center p-2 rounded-xl border border-dashed border-slate-300 w-20 h-20 hover:border-black transition-colors cursor-pointer group">
+                      <span className="text-md text-slate-400 group-hover:text-black transition-colors font-bold">+</span>
+                      <span className="text-[9px] text-slate-400 font-extrabold group-hover:text-black transition-colors mt-0.5">Add Shape</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Extra Options for Clock if Clock selected */}
+                {selectedCanvasName === 'Clock' && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Dial Style</label>
+                      <select
+                        value={modalClockDialType}
+                        onChange={(e) => setModalClockDialType(e.target.value)}
+                        className="h-9 px-2 rounded-lg border border-[#E2E8F0] bg-white text-[12px] font-semibold text-[#0F172A] focus:outline-none"
+                      >
+                        <option value="numbers">Numbers</option>
+                        <option value="roman">Roman Numerals</option>
+                        <option value="ticks">Tick Marks</option>
+                      </select>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Hands Movement</label>
+                      <select
+                        value={modalClockHandMovement}
+                        onChange={(e) => setModalClockHandMovement(e.target.value)}
+                        className="h-9 px-2 rounded-lg border border-[#E2E8F0] bg-white text-[12px] font-semibold text-[#0F172A] focus:outline-none"
+                      >
+                        <option value="sweep">Sweep (Smooth)</option>
+                        <option value="tick">Tick (1s step)</option>
+                        <option value="static">Static</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+
+                {/* Toggles */}
+                <div className="flex flex-col sm:flex-row gap-5 mt-1">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-[12px] font-bold text-[#0F172A]">Upload image</span>
+                    <button
+                      type="button"
+                      onClick={() => setModalUploadImage(!modalUploadImage)}
+                      className={`w-9 h-5.5 rounded-full p-0.5 transition-colors duration-200 focus:outline-none cursor-pointer ${
+                        modalUploadImage ? 'bg-[#3b82f6]' : 'bg-slate-200'
+                      }`}
+                    >
+                      <div
+                        className={`w-4.5 h-4.5 rounded-full bg-white shadow-md transform transition-transform duration-200 ${
+                          modalUploadImage ? 'translate-x-3.5' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-[12px] font-bold text-[#0F172A]">Upload Canvas</span>
+                    <button
+                      type="button"
+                      onClick={() => setModalUploadCanvas(!modalUploadCanvas)}
+                      className={`w-9 h-5.5 rounded-full p-0.5 transition-colors duration-200 focus:outline-none cursor-pointer ${
+                        modalUploadCanvas ? 'bg-[#3b82f6]' : 'bg-slate-200'
+                      }`}
+                    >
+                      <div
+                        className={`w-4.5 h-4.5 rounded-full bg-white shadow-md transform transition-transform duration-200 ${
+                          modalUploadCanvas ? 'translate-x-3.5' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 md:px-8 py-4 bg-slate-50 border-t border-[#E2E8F0]">
+              <div className="text-[11px] text-slate-400 font-semibold text-center sm:text-left">
+                Canvas preview engine: <span className="font-mono">CanvasPreviewRender.jsx</span>
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <button
+                  onClick={() => setSelectedCanvasName(null)}
+                  className="px-4 py-2 rounded-xl text-[13px] font-semibold text-slate-500 hover:bg-slate-100 transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    showToast(`${selectedCanvasName} Attributes saved successfully!`, 'success');
+                    setSelectedCanvasName(null);
+                  }}
+                  className="h-10 px-4 rounded-xl bg-white border border-[#E2E8F0] text-[#0F172A] text-[13px] font-bold hover:bg-slate-50 transition-colors cursor-pointer"
+                >
+                  Save Attributes
+                </button>
+                <button
+                  onClick={() => {
+                    showToast(`${selectedCanvasName} Canvas published successfully!`, 'success');
+                    setSelectedCanvasName(null);
+                  }}
+                  className="h-10 px-5 rounded-xl bg-black text-white text-[13px] font-bold hover:bg-slate-800 transition-colors cursor-pointer"
+                >
+                  Publish
+                </button>
+              </div>
+            </div>
           </motion.div>
         </div>
       )}
